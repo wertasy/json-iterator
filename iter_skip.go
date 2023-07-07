@@ -45,6 +45,19 @@ func (iter *Iterator) SkipAndAppendBytes(buf []byte) []byte {
 	return iter.stopCapture()
 }
 
+// SkipAndReturnObjectBytes skip next JSON element, and return its parent object content as []byte.
+// The []byte can be kept, it is a copy of data.
+func (iter *Iterator) SkipAndReturnObjectBytes() []byte {
+	iter.rewindObject()
+	return iter.SkipAndReturnBytes()
+}
+
+func (iter *Iterator) rewindObject() {
+	for iter.buf[iter.head] != '{' {
+		iter.head--
+	}
+}
+
 func (iter *Iterator) startCaptureTo(buf []byte, captureStartedAt int) {
 	if iter.captured != nil {
 		panic("already in capture mode")
